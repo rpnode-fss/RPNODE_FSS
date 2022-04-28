@@ -3,8 +3,8 @@ Improving Adversarial Robustness for Few Shot Segmentation with Regularized Neur
 
 
 <p align="center">
-  <img src="architecture.jpg" width="48%"/>
-  <img src="regularisation.jpg" width="48%"/><br>
+  <img src="architecture.jpg" width="43%"/>
+  <img src="regularisation.jpg" width="53.2%"/><br>
   Overview of the architecture of R-PNODE and the basic intuition of regularisation
 </p>
 
