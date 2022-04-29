@@ -27,17 +27,7 @@ Change the paths to BCV, CT-ORG and Decathlon datasets in  `config.py` and  `tes
 
 ## Training
 
-To train baseline methods, go to their respective folders and run
-
-```
-python3 train.py with model_name=<save-name> target=<test-target> n_shot=<shot>
-```
-
-
-For  AT-PANet, run `train_adversarial.py` from PANet folder with the same  arguments as before.
-
-
-For  PNODE, some extra arguments are needed. To train  PNODE,  run
+To train  R-PNODE,  run
 
 ```
 python3 train.py with model_name=<save-name> target=<test-target> n_shot=<shot> ode_layers=3 ode_time=4
@@ -47,13 +37,13 @@ Further parameters like the standard deviation of gaussian perturbation can be c
 
 ## Testing
 
-To train baseline methods, go to their respective folders and run
+To test a trained model, run
 
 ```
 python3 test_attacked.py with snapshot=<weights-path> target=<test-target> dataset=<BCV/CTORG/Decathlon> attack=<Clean/FGSM/PGD/SMIA> attack_eps=<eps> to_attack=<q/s>
 ```
 
-This command can be used for testing all  models on all settings, namely 1-shot and 3-shot, liver  and  spleen and Clean, FGSM, PGD and SMIA with different epsilons. 
+This command can be used for testing on all settings, namely 1-shot and 3-shot, liver  and  spleen and Clean, FGSM, PGD and SMIA with different epsilons. 
 
 
 ### Class Mapping
