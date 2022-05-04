@@ -21,6 +21,8 @@ pip install -r requirements.txt
 
 The processed datasets can be downloaded from [here](https://drive.google.com/drive/folders/1o2yiBOKzkwxsSc-gWWwE_Z0yJiWtenMa?usp=sharing).
 
+Some relevant trained model weights can be downloaded from [here](https://drive.google.com/drive/folders/1oUdQ-mDndbCiiWQSdMX_ihhzPYWMGK8A?usp=sharing).
+
 Change the paths to BCV, CT-ORG and Decathlon datasets in  `config.py` and  `test_config.py` according to paths on your local. Also change the path to ImageNet pretrained VGG model weights in these files.
 
 
