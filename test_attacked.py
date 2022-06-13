@@ -29,6 +29,9 @@ import SimpleITK as sitk
 from tqdm import tqdm
 import cv2
 
+from attacks.bim import BIM as attacks_BIM
+from attacks.cw import CW as attacks_CW
+
 
 def overlay_color(img, mask, label, scale=50):
     """
@@ -137,6 +140,13 @@ def main(_run, _config, _log):
                 q_xs = [q_x]
                 return model(s_xs, s_y_fgs, s_y_bgs, q_xs)[0]
             return fun
+        class wrapperModel(torch.nn.Module):
+            def __init__(self, model):
+                super().__init__()
+                self.model = model
+
+            def forward(self, x):
+                return wrapper_fn(self.model)(x)
         if to_attack == "s":
             x = s_x
         else:
@@ -170,6 +180,14 @@ def main(_run, _config, _log):
             x = attack_model.perturb(x, y = y.view(-1, y.shape[-2], y.shape[-1]).to(torch.long), niters=10)
             x = x.detach()
             # x = x.view(init_shape)
+        elif _config["attack"].upper() == "BIM":
+            attack = attacks_BIM(wrapperModel(model_orig), eps=_config["attack_eps"], alpha=_config["attack_eps"]/10, steps=5)
+            x = attack(x, y.view(-1, y.shape[-2], y.shape[-1]).to(torch.long))
+            x = x.detach()
+        elif _config["attack"].upper() == "CW":
+            attack = attacks_CW(wrapperModel(model_orig), c=10, kappa=0, steps=20, lr=0.01)
+            x = attack(x, y.view(-1, y.shape[-2], y.shape[-1]).to(torch.long))
+            x = x.detach()
         elif _config["attack"].upper() == "ASMA":
             attack_model = ASMA(device_id = _config['gpu_id'], model = wrapper_fn(model_orig), tau=0.02, beta=0.02)
             x = attack_model.perform_attack(x, target_mask = y.view(-1, y.shape[-2], y.shape[-1]).to(torch.long).cpu(), total_iter=40)
