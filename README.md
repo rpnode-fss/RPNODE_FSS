@@ -3,7 +3,7 @@ Robust Prototypical Few-Shot Organ Segmentation with Regularized Neural-ODEs
 
 
 <p align="center">
-  <img src="regularisation.jpg" width="80%"/><br>
+  <img src="rpnode.jpg" width="80%"/><br>
 </p>
 
 ## Installation and setup
