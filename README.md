@@ -1,11 +1,9 @@
 # RPNODE_FSS
-Improving Adversarial Robustness for Few Shot Segmentation with Regularized Neural-ODEs
+Robust Prototypical Few-Shot Organ Segmentation with Regularized Neural-ODEs
 
 
 <p align="center">
-  <img src="architecture.jpg" width="43%"/>
-  <img src="regularisation.jpg" width="53.2%"/><br>
-  Overview of the architecture of R-PNODE and the basic intuition of regularisation
+  <img src="regularisation.jpg" width="80%"/><br>
 </p>
 
 ## Installation and setup
