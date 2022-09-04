@@ -1,10 +1,3 @@
-# from cleverhans.torch.attacks.fast_gradient_method import fast_gradient_method as FGSM
-# from cleverhans.torch.attacks.projected_gradient_descent import projected_gradient_descent as PGD
-from attacks import fast_gradient_method as FGSM
-from attacks import projected_gradient_descent as PGD
-from smia import SMIA
-from asma import ASMA
-
 """Evaluation Script"""
 import os
 import shutil
@@ -29,8 +22,13 @@ import SimpleITK as sitk
 from tqdm import tqdm
 import cv2
 
+from attacks.fgsm_pgd import fast_gradient_method as FGSM
+from attacks.fgsm_pgd import projected_gradient_descent as PGD
+from attacks.smia import SMIA
 from attacks.bim import BIM as attacks_BIM
 from attacks.cw import CW as attacks_CW
+from attacks.dag import DAG
+from attacks.autoattack import AutoAttack
 
 
 def overlay_color(img, mask, label, scale=50):
@@ -152,9 +150,7 @@ def main(_run, _config, _log):
         else:
             x = q_x
         if _config["attack"].upper() == "FGSM":
-            # x_list = x
-            # x = x[0]
-            # init_shape = x.shape
+
             # x = x.view(-1, x.shape[-3], x.shape[-2], x.shape[-1])
             local_model = wrapper_fn(model_orig)
             x = FGSM(local_model, x, _config["attack_eps"], np.inf, y=y.view(-1, y.shape[-2], y.shape[-1]).to(torch.long))
@@ -166,13 +162,7 @@ def main(_run, _config, _log):
             local_model = wrapper_fn(model_orig)
             x = PGD(local_model, x, _config["attack_eps"], 0.01, 10, np.inf, y=y.view(-1, y.shape[-2], y.shape[-1]).to(torch.long))
             x = x.detach()
-            # x = x.view(init_shape)
-            
-            # init_shape = x.shape
-            # x = x.view(-1, x.shape[-3], x.shape[-2], x.shape[-1])
-            # x = PGD(model_orig.encoder, x, _config["attack_eps"], 0.01, 40, np.inf)
-            # x = x.detach()
-            # x = x.view(init_shape)
+
         elif _config["attack"].upper() == "SMIA":
             # init_shape = x.shape
             # x = x.view(-1, x.shape[-3], x.shape[-2], x.shape[-1])
@@ -188,50 +178,20 @@ def main(_run, _config, _log):
             attack = attacks_CW(wrapperModel(model_orig), c=10, kappa=0, steps=20, lr=0.01)
             x = attack(x, y.view(-1, y.shape[-2], y.shape[-1]).to(torch.long))
             x = x.detach()
-        elif _config["attack"].upper() == "ASMA":
-            attack_model = ASMA(device_id = _config['gpu_id'], model = wrapper_fn(model_orig), tau=0.02, beta=0.02)
-            x = attack_model.perform_attack(x, target_mask = y.view(-1, y.shape[-2], y.shape[-1]).to(torch.long).cpu(), total_iter=40)
+        elif _config["attack"].upper() == "DAG":
+            y = y.view(-1, y.shape[-2], y.shape[-1]).to(torch.long)
+            tar = torch.randint(0, 2, y.shape).cuda().to(torch.float)
+            tar.requires_grad_()
+            x = DAG(wrapperModel(model_orig), x, y, tar, gamma=_config["attack_eps"])
+            x = x[0]
+            x = x.detach()
+        elif _config["attack"].upper() == "AUTO":
+            attack = AutoAttack(wrapperModel(model_orig), dice_thresh=0.1, n_target_classes=1, eps=_config["attack_eps"], n_iter=5, attacks_to_run=['apgd-ce', 'pgd', 'fab', 'square'], verbose=False)
+            x = attack.run_standard_evaluation(x, y.view(-1, y.shape[-2], y.shape[-1]).to(torch.long))
             x = x.detach()
         else:
             pass
         return x
-
-    # def perturb(x):
-    #     if save_vis:
-    #         nonlocal sample_id
-    #         sample_id += 1
-    #         cur_dir = os.path.join(perturbed_dir, str(sample_id))
-    #         os.makedirs(cur_dir, exist_ok=True)
-    #         if len(x.shape) == 6:
-    #             orig_img = x[0, 0, 0, 0, ...].cpu().detach().numpy()
-    #         elif len(x.shape) == 5:
-    #             orig_img = x[0, 0, 0, ...].cpu().detach().numpy()
-    #         orig_img = orig_img.astype(np.float)
-    #         cv2.imwrite(os.path.join(cur_dir, "orig.png"), 255*(orig_img - np.min(orig_img))/(np.max(orig_img) - np.min(orig_img)))
-    #     if _config["attack"].upper() == "FGSM":
-    #         init_shape = x.shape
-    #         x = x.view(-1, x.shape[-3], x.shape[-2], x.shape[-1])
-    #         x = FGSM(model_orig.encoder, x, _config["attack_eps"], np.inf)
-    #         x = x.detach()
-    #         x = x.view(init_shape)
-    #     elif _config["attack"].upper() == "PGD":
-    #         init_shape = x.shape
-    #         x = x.view(-1, x.shape[-3], x.shape[-2], x.shape[-1])
-    #         x = PGD(model_orig.encoder, x, _config["attack_eps"], 0.01, 40, np.inf)
-    #         x = x.detach()
-    #         x = x.view(init_shape)
-    #     else:
-    #         pass
-    #     if save_vis:
-    #         if len(x.shape) == 6:
-    #             orig_img = x[0, 0, 0, 0, ...].cpu().detach().numpy()
-    #         elif len(x.shape) == 5:
-    #             orig_img = x[0, 0, 0, ...].cpu().detach().numpy()
-    #         orig_img = orig_img.astype(np.float)
-    #         cv2.imwrite(os.path.join(cur_dir, "perturbed.png"), 255*(orig_img - np.min(orig_img))/(np.max(orig_img) - np.min(orig_img)))
-    #     return x
-
-
 
     saves = {}
     for subj_idx in range(len(used_dataset.get_cnts())):

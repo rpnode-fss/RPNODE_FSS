@@ -70,8 +70,8 @@ The possible options for the `attack` argument are:
 - [x] smia
 - [x] bim 
 - [x] cw
-- [ ] dag
-- [ ] auto
+- [x] dag
+- [x] auto
 
 These are case insensitive, and using variants like FGSM, FGsm, fGsM will also lead to same effect. 
 
