@@ -50,6 +50,18 @@ To test a trained model, run
 python3 test_attacked.py with snapshot=<weights-path> target=<test-target> dataset=<BCV/CTORG/Decathlon> attack=<Clean/FGSM/PGD/SMIA> attack_eps=<eps> to_attack=<q/s>
 ```
 
+Arguments for some particular settings are:
+
+| Setting  | Arguments |
+| ------------- | ------------- |
+| BCV in-domain 1-shot Liver | dataset=BCV n_shot=1 target=6 |
+| BCV in-domain 3-shot Spleen | dataset=BCV n_shot=3 target=1 |
+| BCV -> CT-ORG cross-domain 1-shot Liver | dataset=CTORG n_shot=1 target=1 |
+| BCV -> Decathlon cross-domain 3-shot Liver | dataset=Decathlon n_shot=3 target=2 |
+| BCV -> Decathlon cross-domain 1-shot Spleen | dataset=Decathlon n_shot=1 target=6 |
+
+Note particularly for the cross-domain settings that the target class index used during training may be different from that used during testing. Special care must be taken that models trained for particular target organs are tested for the same organs to avoid misleading results. Please refer to the class mapping at the end of the readme for exact target indices. 
+
 The possible options for the `attack` argument are: 
 
 - [x] clean (standard FSS, without any attack)
