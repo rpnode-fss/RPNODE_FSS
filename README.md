@@ -69,9 +69,13 @@ This command can be used for testing on all settings, namely 1-shot and 3-shot, 
 
 Visualization can be enabled by setting `save_vis` as True. The path where the visualisations will be saved can be modified [here](https://github.com/rpnode-fss/RPNODE_FSS/blob/105f5eae0638f20c2d1fc118f673c332376e028c/test_attacked.py#L343).
 
+<p align="center">
+  <img src="Grid.png" width="60%"/><br>
+</p>
+
 ## Acknowledgement
 
-This repository adapts from [`BiGRU-FSS`](https://github.com/oopil/3D_medical_image_FSS). 4 of the baselines are from here. The other baseline is the Neural-ODE based [`SONet`](https://github.com/yao-lab/SONet). Attacks are adapted from well known libraries like [`CleverHans`](https://github.com/cleverhans-lab/cleverhans) and [`TorchAttacks`](https://github.com/Harry24k/adversarial-attacks-pytorch). Other attacks are adapted from their respective sources: [`SMIA`](https://github.com/imogenqi/SMA), [`DAG`](https://github.com/IFL-CAMP/dense_adversarial_generation_pytorch) and [`Auto-attack`](https://github.com/BCV-Uniandes/ROG). We thank the authors for their awseome works.
+This repository adapts from [`BiGRU-FSS`](https://github.com/oopil/3D_medical_image_FSS). 4 of the baselines are from here. The other baseline is the Neural-ODE based [`SONet`](https://github.com/yao-lab/SONet). Attacks are adapted from well known libraries like [`CleverHans`](https://github.com/cleverhans-lab/cleverhans) and [`TorchAttacks`](https://github.com/Harry24k/adversarial-attacks-pytorch). Other attacks are adapted from their respective sources: [`SMIA`](https://github.com/imogenqi/SMA), [`DAG`](https://github.com/IFL-CAMP/dense_adversarial_generation_pytorch) and [`Auto-attack`](https://github.com/BCV-Uniandes/ROG). We thank the authors for their awesome works.
 
 
 ### Class Mapping
